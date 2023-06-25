@@ -1,0 +1,14 @@
+{
+  "domain": "openai_conversation_actions",
+  "name": "OpenAI Conversation Actions",
+  "codeowners": ["@alanjames1987"],
+  "config_flow": true,
+  "dependencies": ["conversation"],
+  "documentation": "https://github.com/alanjames1987/OpenAI-Action-HA",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/alanjames1987/OpenAI-Action-HA/issues",
+  "requirements": ["openai==0.27.2"],
+  "version": "v0.0.1",
+  "loggers": ["custom_components.openai_conversation_actions"] 
+}
