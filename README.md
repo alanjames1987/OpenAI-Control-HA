@@ -9,7 +9,7 @@
 
 </h1>
 
-| :warning: This integration is a work in progress and is ready to be installed. |
+| :warning: This integration is a work in progress and is not ready to be used. |
 | --- |
 
 # About
