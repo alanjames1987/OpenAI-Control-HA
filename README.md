@@ -1,6 +1,6 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/main/.attachments/icon-light-mode.png#gh-light-mode-only">
-    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/main/.attachments/icon-dark-mode.png#gh-dark-mode-only">
+    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/icon-light-mode.png#gh-light-mode-only">
+    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/icon-dark-mode.png#gh-dark-mode-only">
 </p>
 
 <h1 align="center">
