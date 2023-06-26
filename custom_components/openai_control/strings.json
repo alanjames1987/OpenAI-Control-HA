@@ -5,6 +5,15 @@
         "data": {
           "api_key": "[%key:common::config_flow::data::api_key%]"
         }
+      },
+      "init": {
+        "data": {
+          "prompt": "Prompt Template",
+          "model": "Completion Model",
+          "max_tokens": "Maximum tokens to return in response",
+          "temperature": "Temperature",
+          "top_p": "Top P"
+        }
       }
     },
     "error": {
