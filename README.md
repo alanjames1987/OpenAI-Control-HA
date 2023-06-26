@@ -44,7 +44,7 @@ Currently, this integration only supports OpenAI but can be used as a base to in
 
 1. This may take some time but once it's complete restart Home Assistant.
 
-## Home Assistant Devices & Services
+## Configur
 
 1. Once Home Assistant restarts navigate to the Home Assistant Devices & Services page by clicking the gear icon in the bottom left of your Home Assistant interface and then clicking "Devices & Services".
 

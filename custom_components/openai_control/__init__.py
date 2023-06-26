@@ -232,7 +232,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 response=intent_response, conversation_id=conversation_id
             )
 
-        # TODO: call the needed services on the specific entities
+        # call the needed services on the specific entities
 
         for entity in json_response["entities"]:
             # TODO: make this support more than just lights
