@@ -226,10 +226,12 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         # TODO: call the needed services on the specific entities
 
+        # await hass.services.async_call('light', 'turn_on', {'entity_id': 'light.living_room'})
+
         # resond with the "assistant" field of the json_response
 
         try:
-            reply = json_response.assistant
+            reply = json_response['assistant']
         except Any as err:
             intent_response = intent.IntentResponse(language=user_input.language)
             intent_response.async_set_error(
