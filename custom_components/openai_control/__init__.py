@@ -240,9 +240,13 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         match = re.search(pattern, content, re.DOTALL)
 
         if match:
-            json_response = match.group()
+            json_string = match.group()
+            try:
+                json_response = json.loads(json_string)
+            except json.JSONDecodeError as err:
+                _LOGGER.error('Error on second parsing of JSON message from OpenAI %s', err)
         else:
-            _LOGGER.error('Error on second parsing of JSON message from OpenAI, %s', content)
+            _LOGGER.error('Error on second extraction of JSON message from OpenAI, %s', content)
 
         # only operate on JSON actions if JSON was extracted
         if json_response is not None:

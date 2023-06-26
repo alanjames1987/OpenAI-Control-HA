@@ -44,7 +44,7 @@ Currently, this integration only supports OpenAI but can be used as a base to in
 
 1. This may take some time but once it's complete restart Home Assistant.
 
-## Configur
+## Configure
 
 1. Once Home Assistant restarts navigate to the Home Assistant Devices & Services page by clicking the gear icon in the bottom left of your Home Assistant interface and then clicking "Devices & Services".
 
@@ -52,4 +52,6 @@ Currently, this integration only supports OpenAI but can be used as a base to in
 
 1. Click it and the integration will install and start the configuration process.
 
-1. TDB
+1. Once installed click on a modal will ask you for your OpenAI API key. To get one visit the [OpenAI API Key portal](https://platform.openai.com/account/api-keys) and create a new one. Note, you will need billing configured on your account to create a key.
+
+1. Once you enter the OpenAI API key the integration is installed and can be used.
