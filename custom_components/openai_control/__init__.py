@@ -123,8 +123,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
             entities += entity_template.substitute(
                 id=entity_id,
-                name=entity.name,
-                status=status_string,
+                name=entity.name or entity_id,
+                status=status_string or "unknown",
                 action=','.join(services),
             )
 
