@@ -113,7 +113,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             # TODO: only add entities that are exposed to the Conversation Assistant
 
             try:
-                _LOGGER.debug('ENTITY-> . ::::: %s', str(entity.options['conversation']))
+                # _LOGGER.debug('ENTITY-> . ::::: %s', str(entity.options['conversation']))
+                _LOGGER.debug('ENTITY-> . ::::: %s', str(entity.options.conversation))
                 # entity.options.conversation.should_expose
             except:
                 _LOGGER.debug('ERROR:::::')
