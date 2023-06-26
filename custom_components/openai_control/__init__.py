@@ -96,41 +96,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         self, user_input: conversation.ConversationInput
     ) -> conversation.ConversationResult:
         
-        """Get all entities"""
-        # TODO: for this version we are only focusing on lights
-        # We can expand this in a future version
-
-        registry = entity_registry.async_get(self.hass)
-        entity_ids = self.hass.states.async_entity_ids('light')
-        
-        entities = ''
-
-        # entries: dict[str, dict[str, Any] | None] = {}
-
-        for entity_id in entity_ids:
-            # get entities from the registry to determine if they are exposed to the Conversation Assistant
-            entity = registry.entities.get(entity_id)
-            # TODO: only add entities that are exposed to the Conversation Assistant
-
-            if entity.options['conversation']['should_expose'] is not True:
-                continue
-
-            status_object = self.hass.states.get(entity_id)
-            status_string = status_object.state
-
-            # TODO: change this to dynamic call once we support more than lights
-            services = ['toggle', 'turn_off', 'turn_on']
-
-            entities += entity_template.substitute(
-                id=entity_id,
-                name=entity.name or entity_id,
-                status=status_string or "unknown",
-                action=','.join(services),
-            )
-
-        _LOGGER.debug('ENTITIES::::: %s', entities)
-
         """Process a sentence."""
+
         raw_prompt = self.entry.options.get(CONF_PROMPT, DEFAULT_PROMPT)
         model = self.entry.options.get(CONF_CHAT_MODEL, DEFAULT_CHAT_MODEL)
         max_tokens = self.entry.options.get(CONF_MAX_TOKENS, DEFAULT_MAX_TOKENS)
@@ -163,19 +130,51 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 )
             messages = [{"role": "system", "content": prompt}]
 
-        ### BYPASSING OPENAI TEMP ###
 
+        """Get all entities exposed to the Conversation Assistant"""
+        # NOTE: for this version we are only focusing on lights
+
+        registry = entity_registry.async_get(self.hass)
+        entity_ids = self.hass.states.async_entity_ids('light')
+        
+        entities_template = ''
+
+        for entity_id in entity_ids:
+            # get entities from the registry 
+            # to determine if they are exposed to the Conversation Assistant
+            entity = registry.entities.get(entity_id)
+
+            if entity.options['conversation']['should_expose'] is not True:
+                continue
+
+            status_object = self.hass.states.get(entity_id)
+            status_string = status_object.state
+
+            # TODO: change this to dynamic call once we support more than lights
+            services = ['toggle', 'turn_off', 'turn_on']
+
+            entities_template += entity_template.substitute(
+                id=entity_id,
+                name=entity.name or entity_id,
+                status=status_string or "unknown",
+                action=','.join(services),
+            )
+
+        # add the next prompt onto the end of the conversation
+        prompt_render = user_prompt_template.substitute(
+            entities=entities_template,
+            prompt=user_input.text
+        )
+
+        _LOGGER.debug('PROMPT RENDER::::: %s', prompt_render)
+
+        ### BYPASSING OPENAI TEMP ###
         intent_response = intent.IntentResponse(language=user_input.language)
         intent_response.async_set_speech('TESTING: THIS IS A BYPASS')
         return conversation.ConversationResult(
             response=intent_response, conversation_id=conversation_id
         )
-
-        # add the next prompt onto the end of the conversation
-        next_prompt = user_prompt_template.substitute(
-            entities=entities,
-            prompt=user_input.text
-        )
+        ### BYPASSING OPENAI TEMP ###
 
         messages.append({"role": "user", "content": next_prompt})
 
