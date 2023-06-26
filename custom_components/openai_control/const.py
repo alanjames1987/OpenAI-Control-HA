@@ -17,13 +17,19 @@ $entities
 
 Prompt: "$prompt"
 
-JSON Template: { "entities": [ { "id": "", "name": "", "action": "" } ], "assistant": " }
+Command Template: { "entities": [ { "id": "", "name": "", "action": "" } ], "assistant": "" }
+Response Template { "assistant": "" }
 
-Determine if the above prompt is a command related to the above entities.
+Determine if the above prompt is a command related to the above entities
 
-If the prompt is a command then determine which entities best relate to the above prompt and which action should be taken on those entities. Respond in the format of the above JSON template. Fill in the "assistant" field as a natural language responds for the action being taken.
+If the prompt is a command then determine which entities best relate to the above prompt and which action should be taken on those entities.
+Respond in the format of the above Command Template.
 
-If the prompt is not a command then respond in the format of the above JSON template only filling in the "assistant" field.
+If the prompt is not a command then respond in the format of the above Response Template.
+
+Fill in the "assistant" field as a natural language responds for the action being taken.
+
+Only respond in JSON.
 """
 
 """Options"""
