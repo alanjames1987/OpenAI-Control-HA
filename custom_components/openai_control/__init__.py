@@ -215,14 +215,22 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 response=intent_response, conversation_id=conversation_id
             )
 
-        json_string = result["choices"][0]["message"]["content"]
+        content = result["choices"][0]["message"]["content"]
+
+        _LOGGER.debug("Response for %s: %s", model, content)
 
         # all responses should come back as a JSON, since we requested such in the prompt_template
         try:
-            json_response = json.loads(json_string)
+            json_response = json.loads(content)
         # if the response did not come back as a JSON then we will log it as an error
+        # and, for this version, reply with whatever OpenAI said
         except json.JSONDecodeError as err:
             _LOGGER.error('Error parsing JSON message from OpenAI %s', err)
+            intent_response = intent.IntentResponse(language=user_input.language)
+            intent_response.async_set_speech(content)
+            return conversation.ConversationResult(
+                response=intent_response, conversation_id=conversation_id
+            )
 
         # TODO: call the needed services on the specific entities
 
