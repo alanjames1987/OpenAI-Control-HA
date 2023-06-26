@@ -9,7 +9,7 @@
 
 </h1>
 
-| :warning: This integration is a work in progress and is not ready to be used. |
+| :warning: This integration is a work in progress and only controls lights. |
 | --- |
 
 # About
