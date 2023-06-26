@@ -19,7 +19,7 @@ Prompt: "$prompt"
 
 JSON Template: { "entities": [ { "id": "", "name": "", "action": "" } ], "assistant": "" }
 
-Determine if the above prompt is a command related to the above entities.
+Determine if the above prompt is a command related to the above entities. Respond only in JSON.
 
 If the prompt is a command then determine which entities relate to the above prompt and which action should be taken on those entities.
 Respond in the format of the above JSON Template.
@@ -36,7 +36,7 @@ CONF_CHAT_MODEL = "chat_model"
 DEFAULT_CHAT_MODEL = "gpt-3.5-turbo"
 
 CONF_MAX_TOKENS = "max_tokens"
-DEFAULT_MAX_TOKENS = 150
+DEFAULT_MAX_TOKENS = 250
 
 CONF_TOP_P = "top_p"
 DEFAULT_TOP_P = 1
