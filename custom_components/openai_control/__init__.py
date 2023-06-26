@@ -103,8 +103,6 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         registry = entity_registry.async_get(self.hass)
         entity_ids = self.hass.states.async_entity_ids('light')
         
-        first = True
-
         entities = ''
 
         # entries: dict[str, dict[str, Any] | None] = {}
@@ -114,15 +112,12 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             entity = registry.entities.get(entity_id)
             # TODO: only add entities that are exposed to the Conversation Assistant
 
-            if first:
-                first = False
-                try:
-                    _LOGGER.debug('ENTITY-> . ::::: %s', entity.options['conversation'])
-                    # entity.options.conversation.should_expose
-                except:
-                    _LOGGER.debug('ERROR:::::')
-                    pass
-
+            try:
+                _LOGGER.debug('ENTITY-> . ::::: %s', str(entity.options['conversation']))
+                # entity.options.conversation.should_expose
+            except:
+                _LOGGER.debug('ERROR:::::')
+                pass
 
             # if entity.options.conversation.should_expose is not True:
             #     continue
