@@ -234,11 +234,14 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         # call the needed services on the specific entities
 
-        for entity in json_response["entities"]:
-            # TODO: make this support more than just lights
-            await self.hass.services.async_call('light', entity['action'], {'entity_id': entity['id']})
-            _LOGGER.debug('ACTION: %s', entity['action'])
-            _LOGGER.debug('ID: %s', entity['id'])
+        try:
+            for entity in json_response["entities"]:
+                # TODO: make this support more than just lights
+                await self.hass.services.async_call('light', entity['action'], {'entity_id': entity['id']})
+                _LOGGER.debug('ACTION: %s', entity['action'])
+                _LOGGER.debug('ID: %s', entity['id'])
+        except KeyError as err:
+            _LOGGER.warn('No entities detected for prompt %s', user_input.text)
 
         # resond with the "assistant" field of the json_response
 
