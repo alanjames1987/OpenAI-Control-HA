@@ -1,6 +1,8 @@
 """The OpenAI Conrtrol integration."""
 from __future__ import annotations
 
+import json
+
 from functools import partial
 import logging
 from typing import Any, Literal
@@ -213,17 +215,36 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 response=intent_response, conversation_id=conversation_id
             )
 
-        _LOGGER.debug("RESPONSE::::: %s", result)
+        json_string = result["choices"][0]["message"]["content"]
 
-        response = result["choices"][0]["message"]
+        # all responses should come back as a JSON, since we requested such in the prompt_template
+        try:
+            json_response = json.loads(json_string)
+        # if the response did not come back as a JSON then we will log it as an error
+        except json.JSONDecodeError as err:
+            _LOGGER.error('Error parsing JSON message from OpenAI %s', err)
 
-        # check if the response is an JSON Template or an Assistant response
+        # TODO: call the needed services on the specific entities
 
-        messages.append(response)
+        # resond with the "assistant" field of the json_response
+
+        try:
+            reply = json_response.assistant
+        except Any as err:
+            intent_response = intent.IntentResponse(language=user_input.language)
+            intent_response.async_set_error(
+                intent.IntentResponseErrorCode.UNKNOWN,
+                f"Sorry, there was an error understanding OpenAI: {err}",
+            )
+            return conversation.ConversationResult(
+                response=intent_response, conversation_id=conversation_id
+            )
+
+        messages.append(reply)
         self.history[conversation_id] = messages
 
         intent_response = intent.IntentResponse(language=user_input.language)
-        intent_response.async_set_speech(response["content"])
+        intent_response.async_set_speech(reply)
         return conversation.ConversationResult(
             response=intent_response, conversation_id=conversation_id
         )
