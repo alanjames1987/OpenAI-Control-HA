@@ -110,6 +110,22 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         # check if the conversation is continuing or new
 
+        # generate the prompt to be added to the sending messages later
+        try:
+            prompt = self._async_generate_prompt(raw_prompt)
+        except TemplateError as err:
+
+            _LOGGER.error("Error rendering prompt: %s", err)
+
+            intent_response = intent.IntentResponse(language=user_input.language)
+            intent_response.async_set_error(
+                intent.IntentResponseErrorCode.UNKNOWN,
+                f"Sorry, I had a problem with my template: {err}",
+            )
+            return conversation.ConversationResult(
+                response=intent_response, conversation_id=conversation_id
+            )
+
         # if continuing then get the messages from the conversation history
         if user_input.conversation_id in self.history:
             conversation_id = user_input.conversation_id
@@ -117,24 +133,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         # if new then create a new conversation history
         else:
             conversation_id = ulid.ulid()
-
             # add the conversation starter to the begining of the conversation
             # this is to give the assistant more personality
-            try:
-                prompt = self._async_generate_prompt(raw_prompt)
-            except TemplateError as err:
-
-                _LOGGER.error("Error rendering prompt: %s", err)
-
-                intent_response = intent.IntentResponse(language=user_input.language)
-                intent_response.async_set_error(
-                    intent.IntentResponseErrorCode.UNKNOWN,
-                    f"Sorry, I had a problem with my template: {err}",
-                )
-                return conversation.ConversationResult(
-                    response=intent_response, conversation_id=conversation_id
-                )
-
             messages = [{"role": "system", "content": prompt}]
 
         """ Entities """
