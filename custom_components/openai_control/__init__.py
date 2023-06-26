@@ -100,50 +100,50 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         # TODO: for this version we are only focusing on lights
         # We can expand this in a future version
 
-        # registry = entity_registry.async_get(self.hass)
-        # entity_ids = self.hass.states.async_entity_ids('light')
+        registry = entity_registry.async_get(self.hass)
+        entity_ids = self.hass.states.async_entity_ids('light')
         
-        # first = True
+        first = True
 
         entities = ''
 
         # entries: dict[str, dict[str, Any] | None] = {}
 
-        # for entity_id in entity_ids:
-        #     # get entities from the registry to determine if they are exposed to the Conversation Assistant
-        #     entity = registry.entities.get(entity_id)
-        #     # TODO: only add entities that are exposed to the Conversation Assistant
+        for entity_id in entity_ids:
+            # get entities from the registry to determine if they are exposed to the Conversation Assistant
+            entity = registry.entities.get(entity_id)
+            # TODO: only add entities that are exposed to the Conversation Assistant
 
-        #     if first:
-        #         first = False
-        #         try:
-        #             _LOGGER.debug('ENTITY-> . ::::: %s', entity.options)
-        #             # entity.options.conversation.should_expose
-        #         except:
-        #             pass
+            if first:
+                first = False
+                try:
+                    _LOGGER.debug('ENTITY-> . ::::: %s', entity.options)
+                    # entity.options.conversation.should_expose
+                except:
+                    pass
 
-        #         try:
-        #             _LOGGER.debug('ENTITY-> [] ::::: %s', entity["options"])
-        #         except:
-        #             pass
+                try:
+                    _LOGGER.debug('ENTITY-> [] ::::: %s', entity["options"])
+                except:
+                    pass
 
-        #     # if entity.options.conversation.should_expose is not True:
-        #     #     continue
+            # if entity.options.conversation.should_expose is not True:
+            #     continue
 
-        #     status_object = self.hass.states.get(entity_id)
-        #     status_string = status_object.state
+            status_object = self.hass.states.get(entity_id)
+            status_string = status_object.state
 
-        #     # TODO: change this to dynamic call once we support more than lights
-        #     services = ['toggle', 'turn_off', 'turn_on']
+            # TODO: change this to dynamic call once we support more than lights
+            services = ['toggle', 'turn_off', 'turn_on']
 
-        #     entities += entity_template.substitute(
-        #         id=entity_id,
-        #         name=entity.name,
-        #         status=status_string,
-        #         action=','.join(services),
-        #     )
+            entities += entity_template.substitute(
+                id=entity_id,
+                name=entity.name,
+                status=status_string,
+                action=','.join(services),
+            )
 
-        # _LOGGER.debug('ENTITIES::::: %s', entities)
+        _LOGGER.debug('ENTITIES::::: %s', entities)
 
         """Process a sentence."""
         raw_prompt = self.entry.options.get(CONF_PROMPT, DEFAULT_PROMPT)
@@ -177,6 +177,14 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                     response=intent_response, conversation_id=conversation_id
                 )
             messages = [{"role": "system", "content": prompt}]
+
+        ### BYPASSING OPENAI TEMP ###
+
+        intent_response = intent.IntentResponse(language=user_input.language)
+        intent_response.async_set_speech('TESTING: THIS IS A BYPASS')
+        return conversation.ConversationResult(
+            response=intent_response, conversation_id=conversation_id
+        )
 
         # add the next prompt onto the end of the conversation
         next_prompt = user_prompt_template.substitute(
