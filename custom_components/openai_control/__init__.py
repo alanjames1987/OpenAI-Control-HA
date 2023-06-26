@@ -114,7 +114,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
             try:
                 # _LOGGER.debug('ENTITY-> . ::::: %s', str(entity.options['conversation']))
-                _LOGGER.debug('ENTITY-> . ::::: %s', str(type(entity.options.conversation.should_expose)))
+                _LOGGER.debug('ENTITY-> . ::::: %s', str(entity.options.conversation))
                 # entity.options.conversation.should_expose
             except:
                 _LOGGER.debug('ERROR:::::')
