@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 from functools import partial
 import logging
@@ -217,45 +218,60 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         content = result["choices"][0]["message"]["content"]
 
+        # set a default reply
+        # this will be changed if a better reply is found
+        reply = content
+
         _LOGGER.debug("Response for %s: %s", model, content)
+
+        json_response = None
 
         # all responses should come back as a JSON, since we requested such in the prompt_template
         try:
             json_response = json.loads(content)
-        # if the response did not come back as a JSON then we will log it as an error
-        # and, for this version, reply with whatever OpenAI said
         except json.JSONDecodeError as err:
-            _LOGGER.error('Error parsing JSON message from OpenAI %s', err)
-            intent_response = intent.IntentResponse(language=user_input.language)
-            intent_response.async_set_speech(content)
-            return conversation.ConversationResult(
-                response=intent_response, conversation_id=conversation_id
-            )
+            _LOGGER.error('Error on first parsing of JSON message from OpenAI %s', err)
 
-        # call the needed services on the specific entities
+        # if the response did not come back as a JSON
+        # attempt to extract JSON from the response
+        # this is because GPT will sometimes prefix the JSON with a sentence
 
-        try:
-            for entity in json_response["entities"]:
-                # TODO: make this support more than just lights
-                await self.hass.services.async_call('light', entity['action'], {'entity_id': entity['id']})
-                _LOGGER.debug('ACTION: %s', entity['action'])
-                _LOGGER.debug('ID: %s', entity['id'])
-        except KeyError as err:
-            _LOGGER.warn('No entities detected for prompt %s', user_input.text)
+        pattern = r'\{.*?\}'
+        match = re.search(pattern, content, re.DOTALL)
 
-        # resond with the "assistant" field of the json_response
+        if match:
+            json_response = match.group()
+        else:
+            _LOGGER.error('Error on second parsing of JSON message from OpenAI %s', err)
 
-        try:
-            reply = json_response['assistant']
-        except KeyError as err:
-            intent_response = intent.IntentResponse(language=user_input.language)
-            intent_response.async_set_error(
-                intent.IntentResponseErrorCode.UNKNOWN,
-                f"Sorry, there was an error understanding OpenAI: {err}",
-            )
-            return conversation.ConversationResult(
-                response=intent_response, conversation_id=conversation_id
-            )
+        # only operate on JSON actions if JSON was extracted
+        if json_response is not None:
+
+            # call the needed services on the specific entities
+
+            try:
+                for entity in json_response["entities"]:
+                    # TODO: make this support more than just lights
+                    await self.hass.services.async_call('light', entity['action'], {'entity_id': entity['id']})
+                    _LOGGER.debug('ACTION: %s', entity['action'])
+                    _LOGGER.debug('ID: %s', entity['id'])
+            except KeyError as err:
+                _LOGGER.warn('No entities detected for prompt %s', user_input.text)
+
+            # resond with the "assistant" field of the json_response
+
+            try:
+                reply = json_response['assistant']
+            except KeyError as err:
+                _LOGGER.error('Error extracting assistant response %s', user_input.text)
+                intent_response = intent.IntentResponse(language=user_input.language)
+                intent_response.async_set_error(
+                    intent.IntentResponseErrorCode.UNKNOWN,
+                    f"Sorry, there was an error understanding OpenAI: {err}",
+                )
+                return conversation.ConversationResult(
+                    response=intent_response, conversation_id=conversation_id
+                )
 
         messages.append(reply)
         self.history[conversation_id] = messages
