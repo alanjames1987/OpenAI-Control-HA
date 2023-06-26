@@ -112,20 +112,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             entity = registry.entities.get(entity_id)
             # TODO: only add entities that are exposed to the Conversation Assistant
 
-            # try:
-                # _LOGGER.debug('ENTITY-> . ::::: %s', str(entity.options.conversation))
-            # except Any as e:
-            #     _LOGGER.debug('ERROR:::::, %s', e)
-            #     pass
-
-            try:
-                _LOGGER.debug('ENTITY-> [] ::::: %s', str(entity.options['conversation']['should_expose']))
-            except Any as e:
-                _LOGGER.debug('ERROR:::::, %s', e)
-                pass
-
-            # if entity.options.conversation.should_expose is not True:
-            #     continue
+            if entity.options['conversation']['should_expose'] is not True:
+                continue
 
             status_object = self.hass.states.get(entity_id)
             status_string = status_object.state
