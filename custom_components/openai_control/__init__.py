@@ -234,7 +234,9 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
 
         # TODO: call the needed services on the specific entities
 
-        # hass.services.async_call('light', 'turn_on', {'entity_id': 'light.living_room'})
+        for entity in json_response["entities"]:
+            # TODO: make this support more than just lights
+            self.hass.services.async_call('light', entity['action'], {'entity_id': entity['id']})
 
         # resond with the "assistant" field of the json_response
 
