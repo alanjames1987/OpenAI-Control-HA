@@ -100,48 +100,48 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         # TODO: for this version we are only focusing on lights
         # We can expand this in a future version
 
-        registry = entity_registry.async_get(self.hass)
-        entity_ids = self.hass.states.async_entity_ids('light')
+        # registry = entity_registry.async_get(self.hass)
+        # entity_ids = self.hass.states.async_entity_ids('light')
         
-        first = True
+        # first = True
 
         entities = ''
 
         # entries: dict[str, dict[str, Any] | None] = {}
 
-        for entity_id in entity_ids:
-            # get entities from the registry to determine if they are exposed to the Conversation Assistant
-            entity = registry.entities.get(entity_id)
-            # TODO: only add entities that are exposed to the Conversation Assistant
+        # for entity_id in entity_ids:
+        #     # get entities from the registry to determine if they are exposed to the Conversation Assistant
+        #     entity = registry.entities.get(entity_id)
+        #     # TODO: only add entities that are exposed to the Conversation Assistant
 
-            if first:
-                first = False
-                try:
-                    _LOGGER.debug('ENTITY-> . ::::: %s', entity.options)
-                    # entity.options.conversation.should_expose
-                except:
-                    pass
+        #     if first:
+        #         first = False
+        #         try:
+        #             _LOGGER.debug('ENTITY-> . ::::: %s', entity.options)
+        #             # entity.options.conversation.should_expose
+        #         except:
+        #             pass
 
-                try:
-                    _LOGGER.debug('ENTITY-> [] ::::: %s', entity["options"])
-                except:
-                    pass
+        #         try:
+        #             _LOGGER.debug('ENTITY-> [] ::::: %s', entity["options"])
+        #         except:
+        #             pass
 
-            # if entity.options.conversation.should_expose is not True:
-            #     continue
+        #     # if entity.options.conversation.should_expose is not True:
+        #     #     continue
 
-            status_object = self.hass.states.get(entity_id)
-            status_string = status_object.state
+        #     status_object = self.hass.states.get(entity_id)
+        #     status_string = status_object.state
 
-            # TODO: change this to dynamic call once we support more than lights
-            services = ['toggle', 'turn_off', 'turn_on']
+        #     # TODO: change this to dynamic call once we support more than lights
+        #     services = ['toggle', 'turn_off', 'turn_on']
 
-            entities += entity_template.substitute(
-                id=entity_id,
-                name=entity.name,
-                status=status_string,
-                action=','.join(services),
-            )
+        #     entities += entity_template.substitute(
+        #         id=entity_id,
+        #         name=entity.name,
+        #         status=status_string,
+        #         action=','.join(services),
+        #     )
 
         # _LOGGER.debug('ENTITIES::::: %s', entities)
 
