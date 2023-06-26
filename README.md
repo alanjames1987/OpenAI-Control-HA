@@ -1,21 +1,26 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Conversation-Actions-HA/main/.attachments/light_icon.png#gh-light-mode-only">
-    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Conversation-Actions-HA/main/.attachments/dark_icon.png#gh-dark-mode-only">
+    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/main/.attachments/light_icon.png#gh-light-mode-only">
+    <img src="https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/main/.attachments/dark_icon.png#gh-dark-mode-only">
 </p>
 
 <h1 align="center">
 
-[OpenAI Conversation Actions Custom Integration](https://github.com/alanjames1987/OpenAI-Conversation-Actions-HA) for Home Assistant
+[OpenAI Control Custom Integration](https://github.com/alanjames1987/OpenAI-Control-HA) for Home Assistant
 
 </h1>
 
+| :warning: This integration is a work in progress and is ready to be installed. |
+| --- |
+
 # About
 
-This is a custom integration to use OpenAI to parse Home Assistant conversations and execute Home Assistant actions.
+This custom integratration uses OpenAI to parse intents from Home Assistant Conversation Assist and call Home Assistant services.
 
-This integration along with the appropriate hardware can replace Alexa, Google Assisant, Siri, and other digital assistants.
+In short, HA Assist can now control your house with natual language and more complex commmands.
 
-This integration only supports OpenAI but can be forked and altered to integrat with other LLMs, like a locally deployed instance of Open Assistant.
+This integration, along with the [appropriate hardware](https://shop.m5stack.com/products/atom-echo-smart-speaker-dev-kit) can replace Alexa, Google Assisant, Siri, and other digital assistants.
+
+Currently, this integration only supports OpenAI but can be used as a base to integrate with other LLMs, like a locally deployed instance of [Open Assistant](https://open-assistant.io/).
 
 # Installation
 
@@ -31,7 +36,7 @@ This integration only supports OpenAI but can be forked and altered to integrat 
 
 1. From "Integrations" click on the three dots in the top right corner and click "Custom reponsitories".
 
-1. Paste in the GitHub link to this repository, [https://github.com/alanjames1987/https://github.com/alanjames1987/OpenAI-Conversation-Actions-HA](https://github.com/alanjames1987/https://github.com/alanjames1987/OpenAI-Conversation-Actions-HA) and select "Integration" as the category.
+1. Paste in the GitHub link to this repository, [https://github.com/alanjames1987/OpenAI-Control-HA](https://github.com/alanjames1987/OpenAI-Control-HA) and select "Integration" as the category.
 
 1. Click add and the integration will be added to HACS.
 
@@ -43,7 +48,7 @@ This integration only supports OpenAI but can be forked and altered to integrat 
 
 1. Once Home Assistant restarts navigate to the Home Assistant Devices & Services page by clicking the gear icon in the bottom left of your Home Assistant interface and then clicking "Devices & Services".
 
-1. Once there click the "Add Integration" button in the bottom right corner and search for "OpenAI Conversation Actions".
+1. Once there click the "Add Integration" button in the bottom right corner and search for "OpenAI Control".
 
 1. Click it and the integration will install and start the configuration process.
 

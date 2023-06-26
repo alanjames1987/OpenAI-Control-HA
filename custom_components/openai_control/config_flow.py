@@ -1,4 +1,4 @@
-"""Config flow for OpenAI Conversation Actions integration."""
+"""Config flow for OpenAI Conrtrol integration."""
 from __future__ import annotations
 
 from functools import partial
@@ -64,7 +64,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> None:
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for OpenAI Conversation Actions."""
+    """Handle a config flow for OpenAI Conrtrol."""
 
     VERSION = 1
 
@@ -89,7 +89,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.exception("Unexpected exception")
             errors["base"] = "unknown"
         else:
-            return self.async_create_entry(title="OpenAI Conversation Actions", data=user_input)
+            return self.async_create_entry(title="OpenAI Conrtrol", data=user_input)
 
         return self.async_show_form(
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
@@ -104,7 +104,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class OptionsFlow(config_entries.OptionsFlow):
-    """OpenAI Conversation Actions config flow options handler."""
+    """OpenAI Conrtrol config flow options handler."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize options flow."""
@@ -115,7 +115,7 @@ class OptionsFlow(config_entries.OptionsFlow):
     ) -> FlowResult:
         """Manage the options."""
         if user_input is not None:
-            return self.async_create_entry(title="OpenAI Conversation Actions", data=user_input)
+            return self.async_create_entry(title="OpenAI Conrtrol", data=user_input)
         schema = openai_config_option_schema(self.config_entry.options)
         return self.async_show_form(
             step_id="init",
@@ -124,7 +124,7 @@ class OptionsFlow(config_entries.OptionsFlow):
 
 
 def openai_config_option_schema(options: MappingProxyType[str, Any]) -> dict:
-    """Return a schema for OpenAI Conversation Actions completion options."""
+    """Return a schema for OpenAI Conrtrol completion options."""
     if not options:
         options = DEFAULT_OPTIONS
     return {

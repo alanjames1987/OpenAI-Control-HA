@@ -1,4 +1,4 @@
-"""The OpenAI Conversation Actions integration."""
+"""The OpenAI Conrtrol integration."""
 from __future__ import annotations
 
 from functools import partial
@@ -39,7 +39,7 @@ entity_template = Template(ENTITY_TEMPLATE)
 user_prompt_template = Template(USER_PROMPT_TEMPLATE)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up OpenAI Conversation Actions from a config entry."""
+    """Set up OpenAI Agent from a config entry."""
     openai.api_key = entry.data[CONF_API_KEY]
 
     try:
@@ -57,7 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload OpenAI."""
+    """Unload OpenAI Agent."""
     openai.api_key = None
     conversation.async_unset_agent(hass, entry)
     return True
@@ -74,7 +74,7 @@ def _entry_ext_dict(entry: er.RegistryEntry) -> dict[str, Any]:
     return data
 
 class OpenAIAgent(conversation.AbstractConversationAgent):
-    """OpenAI Conversation Actions agent."""
+    """OpenAI Conrtrol Agent."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize the agent."""
