@@ -117,9 +117,10 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             if first:
                 first = False
                 try:
-                    _LOGGER.debug('ENTITY-> . ::::: %s', entity.options.conversation)
+                    _LOGGER.debug('ENTITY-> . ::::: %s', entity.options['conversation'])
                     # entity.options.conversation.should_expose
                 except:
+                    _LOGGER.debug('ERROR:::::')
                     pass
 
 
