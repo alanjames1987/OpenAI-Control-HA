@@ -30,13 +30,13 @@ from .const import (
     DEFAULT_TEMPERATURE,
     DEFAULT_TOP_P,
     ENTITY_TEMPLATE,
-    USER_PROMPT_TEMPLATE,
+    PROMPT_TEMPLATE,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 entity_template = Template(ENTITY_TEMPLATE)
-user_prompt_template = Template(USER_PROMPT_TEMPLATE)
+prompt_template = Template(PROMPT_TEMPLATE)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up OpenAI Agent from a config entry."""
@@ -95,8 +95,8 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
     async def async_process(
         self, user_input: conversation.ConversationInput
     ) -> conversation.ConversationResult:
-        
-        """Process a sentence."""
+
+        """ Options input """
 
         raw_prompt = self.entry.options.get(CONF_PROMPT, DEFAULT_PROMPT)
         model = self.entry.options.get(CONF_CHAT_MODEL, DEFAULT_CHAT_MODEL)
@@ -104,13 +104,15 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         top_p = self.entry.options.get(CONF_TOP_P, DEFAULT_TOP_P)
         temperature = self.entry.options.get(CONF_TEMPERATURE, DEFAULT_TEMPERATURE)
 
+        """ Start a sentence """
+
         # check if the conversation is continuing or new
 
         # if continuing then get the messages from the conversation history
         if user_input.conversation_id in self.history:
             conversation_id = user_input.conversation_id
             messages = self.history[conversation_id]
-        # if new create a new conversation history
+        # if new then create a new conversation history
         else:
             conversation_id = ulid.ulid()
 
@@ -119,7 +121,9 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             try:
                 prompt = self._async_generate_prompt(raw_prompt)
             except TemplateError as err:
+
                 _LOGGER.error("Error rendering prompt: %s", err)
+
                 intent_response = intent.IntentResponse(language=user_input.language)
                 intent_response.async_set_error(
                     intent.IntentResponseErrorCode.UNKNOWN,
@@ -128,31 +132,36 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 return conversation.ConversationResult(
                     response=intent_response, conversation_id=conversation_id
                 )
+
             messages = [{"role": "system", "content": prompt}]
 
+        """ Entities """
 
-        """Get all entities exposed to the Conversation Assistant"""
-        # NOTE: for this version we are only focusing on lights
+        # Get all entities exposed to the Conversation Assistant
+        # NOTE: for the first release only lights are supported
 
         registry = entity_registry.async_get(self.hass)
         entity_ids = self.hass.states.async_entity_ids('light')
-        
+
         entities_template = ''
 
         for entity_id in entity_ids:
-            # get entities from the registry 
+            # get entities from the registry
             # to determine if they are exposed to the Conversation Assistant
+            # registry entries have the propert "options['conversation']['should_expose']"
             entity = registry.entities.get(entity_id)
 
             if entity.options['conversation']['should_expose'] is not True:
                 continue
 
+            # get the status string
             status_object = self.hass.states.get(entity_id)
             status_string = status_object.state
 
-            # TODO: change this to dynamic call once we support more than lights
+            # TODO: change this to dynamic call once more than lights are supported
             services = ['toggle', 'turn_off', 'turn_on']
 
+            # append the entitites tempalte
             entities_template += entity_template.substitute(
                 id=entity_id,
                 name=entity.name or entity_id,
@@ -160,30 +169,35 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
                 action=','.join(services),
             )
 
-        # add the next prompt onto the end of the conversation
-        prompt_render = user_prompt_template.substitute(
+        # generate the prompt using the prompt_template
+        prompt_render = prompt_template.substitute(
             entities=entities_template,
             prompt=user_input.text
         )
 
-        _LOGGER.debug('PROMPT RENDER::::: %s', prompt_render)
-
-        ### BYPASSING OPENAI TEMP ###
-        intent_response = intent.IntentResponse(language=user_input.language)
-        intent_response.async_set_speech('TESTING: THIS IS A BYPASS')
-        return conversation.ConversationResult(
-            response=intent_response, conversation_id=conversation_id
-        )
-        ### BYPASSING OPENAI TEMP ###
-
-        messages.append({"role": "user", "content": next_prompt})
+        messages.append({"role": "user", "content": prompt_render})
 
         _LOGGER.debug("Prompt for %s: %s", model, messages)
 
+        """ OpenAI Call """
+
+        # NOTE: this version does not support a full conversation history
+        # this is because the prompt_template and entities list
+        # can quickly increase the size of a conversation
+        # causing an error where the payload is too large
+
+        # to that end we create a new list of messages to be sent
+        # sending only the system role message and the current user message
+        sending_messages = [
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": prompt_render}
+        ]
+
+        # call OpenAI
         try:
             result = await openai.ChatCompletion.acreate(
                 model=model,
-                messages=messages,
+                messages=sending_messages,
                 max_tokens=max_tokens,
                 top_p=top_p,
                 temperature=temperature,
@@ -200,6 +214,7 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
             )
 
         _LOGGER.debug("RESPONSE::::: %s", result)
+
         response = result["choices"][0]["message"]
 
         # check if the response is an JSON Template or an Assistant response

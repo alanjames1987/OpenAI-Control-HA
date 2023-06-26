@@ -5,10 +5,10 @@ DOMAIN = "openai_control"
 ENTITY_TEMPLATE = """$id<->$name<->$status<->$action
 """
 
-USER_PROMPT_TEMPLATE = """Below is a list of devices. The list contains the device id, name, and actions that it can perform.
+PROMPT_TEMPLATE = """Below is a list of devices. The list contains the device id, name, status, and actions that it can perform.
 The id is a dot notated string containing no spaces, ex: "switch.kitchen"
 The name is a human readable string, ex: "Kitchen Switch"
-The status is a human readable string, ex: "On"
+The status is a human readable string, ex: "on"
 The actions are comma delimited strings containing no spaces, ex: "toggle,turn_on,turn_off"
 The sections of the string are delimited by the string "<->"
 
@@ -19,14 +19,11 @@ Prompt: "$prompt"
 
 JSON Template: { "entities": [ { "id": "", "name": "", "action": "" } ], "assistant": " }
 
-Determine if the prompt is a command related to the above entities.
+Determine if the above prompt is a command related to the above entities.
 
-If the prompt is a command then determine which entities best relate to the above prompt and which action should be taken on those entities. Respond in the formate of the above JSON template. Fill in the "assistant" field as a natural language responds for the action being taken.
+If the prompt is a command then determine which entities best relate to the above prompt and which action should be taken on those entities. Respond in the format of the above JSON template. Fill in the "assistant" field as a natural language responds for the action being taken.
 
-If the prompt is not a command then respond filling in "Assistant".
-
-Prompt: "$prompt"
-Assistant: 
+If the prompt is not a command then respond in the format of the above JSON template only filling in the "assistant" field.
 """
 
 """Options"""
