@@ -17,7 +17,7 @@ $entities
 
 Prompt: "$prompt"
 
-JSON Template: { "entities": [ { "id": "", "name": "", "action": "" } ], "assistant": "" }
+JSON Template: { "entities": [ { "id": "", "action": "" } ], "assistant": "" }
 
 Determine if the above prompt is a command related to the above entities. Respond only in JSON.
 
