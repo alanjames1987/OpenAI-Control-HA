@@ -236,11 +236,11 @@ class OpenAIAgent(conversation.AbstractConversationAgent):
         # attempt to extract JSON from the response
         # this is because GPT will sometimes prefix the JSON with a sentence
 
-        pattern = r'\{.*?\}'
-        match = re.search(pattern, content, re.DOTALL)
+        start_idx = content.find('{')
+        end_idx = content.rfind('}') + 1
 
-        if match:
-            json_string = match.group()
+        if start_idx is not -1 and end_idx is not -1:
+            json_string = content[start_idx:end_idx]
             try:
                 json_response = json.loads(json_string)
             except json.JSONDecodeError as err:
