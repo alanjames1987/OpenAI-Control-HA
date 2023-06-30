@@ -48,10 +48,56 @@ Currently, this integration only supports OpenAI but can be used as a base to in
 
 1. Once Home Assistant restarts navigate to the Home Assistant Devices & Services page by clicking the gear icon in the bottom left of your Home Assistant interface and then clicking "Devices & Services".
 
+<div align="center">
+
+![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/install_key.png "API Key")
+
+</div>
+
 1. Once there click the "Add Integration" button in the bottom right corner and search for "OpenAI Control".
+
+<div align="center">
+
+![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/install_select.png "Integraions")
+
+</div>
 
 1. Click it and the integration will install and start the configuration process.
 
 1. Once installed click on a modal will ask you for your OpenAI API key. To get one visit the [OpenAI API Key portal](https://platform.openai.com/account/api-keys) and create a new one. Note, you will need billing configured on your account to create a key.
 
 1. Once you enter the OpenAI API key the integration is installed and can be used.
+
+## How it Works
+
+OpenAI-Control-HA behaves as a standard [Conversation Agent](https://developers.home-assistant.io/docs/core/conversation/custom_agent/) within the Home Assistant [https://www.home-assistant.io/voice_control/voice_remote_local_assistant/]("Assist Pipeline"). It behaves as a intent parser, which is part of the pipeline that takes in a sentence and performs various actions to generate various responses. OpenAI-Control-HA performs the following actions during its intent parsing process.
+
+1. Receives in the sentence sent by the Assist Pipeline.
+
+1. Retrieves the id, name, state, and services of all entities that are exposed to the Conversation pipeline.
+
+1. Adds the entities and sentence to a logic prompt to be sent to OpenAI models (GPT-3.5-Turbo by default).
+    1. The logic prompt asks the OpenAI model to determine if the user's sentence is a command requesting a state change to an entity.
+    1. If the sentence is a command then OpenAI is asked to return a JSON of all entities relating to the command and a service to call on those entities.
+    1. If the sentence is not a command then OpenAI is asked to ignore anything relating to the smart home and reply normally.
+    1. OpenAI is asked to return a conversational response, which will be returned to the user.
+
+1. Once OpenAI returns a JSON response OpenAI-Control-HA parses the returned JSON JSON and calls the service listed for each entitiy OpenAI has identifed relates to the sentence.
+
+1. Finally the conversational response is passed through to the next step of the Assist Pipeline, to be displayed to the user.
+
+## Examples
+
+OpenAI-Control-HA can perform simple tasks but can also understand more obsure requests.
+
+The phrase "Turn on the office switch" did as expected and turned on the office switch.
+
+![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_office.png "Turn on the office sdwitch")
+
+The phrase "Can you get ready for a guest to arrive?" turned on the driveway light, the front door light, the guest room light, and set a special mode in my house called "Guest Mode" to on. This mode disables some automations that some guests might find confusing, like bathroom lights automatically turning off or lights dimming for bedtime.
+
+![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_office.png "Can you get ready for a guest to arrive?")
+
+Based only on their name OpenAI reasoned that these switches related to a guest arriving and turned on the switches.
+
+This type of natual language fuzzy intent parsing can currently only be achives using LLMs.
