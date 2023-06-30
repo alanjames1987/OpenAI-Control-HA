@@ -92,11 +92,19 @@ OpenAI-Control-HA can perform simple tasks but can also understand more obsure r
 
 The phrase "Turn on the office switch" did as expected and turned on the office switch.
 
-![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_office.png "Turn on the office sdwitch")
+<div align="center">
+
+![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_office.png "Turn on the office switch")
+
+</div>
 
 The phrase "Can you get ready for a guest to arrive?" turned on the driveway light, the front door light, the guest room light, and set a special mode in my house called "Guest Mode" to on. This mode disables some automations that some guests might find confusing, like bathroom lights automatically turning off or lights dimming for bedtime.
 
+<div align="center">
+
 ![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_office.png "Can you get ready for a guest to arrive?")
+
+</div>
 
 Based only on their name OpenAI reasoned that these switches related to a guest arriving and turned on the switches.
 
