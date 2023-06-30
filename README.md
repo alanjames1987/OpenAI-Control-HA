@@ -102,7 +102,7 @@ The phrase "Can you get ready for a guest to arrive?" turned on the driveway lig
 
 <div align="center">
 
-![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_office.png "Can you get ready for a guest to arrive?")
+![](https://raw.githubusercontent.com/alanjames1987/OpenAI-Control-HA/master/.attachments/example_guest.png "Can you get ready for a guest to arrive?")
 
 </div>
 
