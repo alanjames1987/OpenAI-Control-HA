@@ -16,7 +16,7 @@
 
 This custom integratration uses OpenAI to parse intents from Home Assistant Conversation Assist and call Home Assistant services.
 
-In short, HA Assist can now control your house with natual language and more complex commmands.
+In short, HA Assist can now control your house with natural language and more complex commmands.
 
 This integration, along with the [appropriate hardware](https://shop.m5stack.com/products/atom-echo-smart-speaker-dev-kit) can replace Alexa, Google Assisant, Siri, and other digital assistants.
 
