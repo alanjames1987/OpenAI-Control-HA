@@ -108,4 +108,4 @@ The phrase "Can you get ready for a guest to arrive?" turned on the driveway lig
 
 Based only on their name OpenAI reasoned that these switches related to a guest arriving and turned on the switches.
 
-This type of natual language fuzzy intent parsing can currently only be achived using LLMs.
+This type of natural language fuzzy intent parsing can currently only be achived using LLMs.
