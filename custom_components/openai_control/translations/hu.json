@@ -1,0 +1,19 @@
+{
+  "config": {
+    "abort": {
+      "single_instance_allowed": "Már konfigurálva. Csak egyetlen konfiguráció lehetséges."
+    },
+    "error": {
+      "cannot_connect": "Nem sikerült csatlakozni",
+      "invalid_auth": "Azonosítás sikertelen",
+      "unknown": "Nem várt hiba"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "API kulcs"
+        }
+      }
+    }
+  }
+}
